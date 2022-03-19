@@ -58,7 +58,7 @@ def min_sum(array: List) -> MinSubArray:
 #         print(array, "=>", array[st:en], "soma", min_sum_array.sum)
 
 
-def dp_min_sum(array: List[int], min_sum_so_far=None, current_sum=None)->int:
+def dp_min_sum(array: List[int], min_sum_so_far=None, current_sum=None) -> int:
     """
     Calculates the minimum sum of a continuous sub-array of array.
     Returns a named tuple with attributes sum, with the actual minimum
