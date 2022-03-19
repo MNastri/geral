@@ -23,6 +23,8 @@ def min_sum(array: List) -> MinSubArray:
     Returns a named tuple with attributes sum, with the actual minimum
     sum; start_index, with the starting index for the sub-array; and end_index,
     with the ending index for the sub-array.
+
+    NAIVE APPROACH?
     :param array:
     :return:
     """
@@ -48,9 +50,48 @@ def min_sum(array: List) -> MinSubArray:
     return MinSubArray(min_st_idx, min_en_idx + 1, mini_sum)
 
 
+# if __name__ == "__main__":
+#     for array in INPUT_ARRAYS:
+#         min_sum_array = min_sum(array)
+#         st = min_sum_array.start_index
+#         en = min_sum_array.end_index
+#         print(array, "=>", array[st:en], "soma", min_sum_array.sum)
+
+
+def dp_min_sum(array: List[int], min_sum_so_far=None, current_sum=None)->int:
+    """
+    Calculates the minimum sum of a continuous sub-array of array.
+    Returns a named tuple with attributes sum, with the actual minimum
+    sum; start_index, with the starting index for the sub-array; and end_index,
+    with the ending index for the sub-array.
+
+    DYNAMIC PROGRAMING APPROACH?
+    :param array:
+    :param min_sum_so_far:
+    :param current_sum:
+    :return:
+    """
+    if not array:
+        return min_sum_so_far
+    element = array[0]
+    if min_sum_so_far is None:
+        min_sum_so_far = float("inf")
+    if current_sum is None:
+        current_sum = float("inf")
+    if element < min_sum_so_far:
+        min_sum_so_far = element
+    elif (element >= min_sum_so_far) and (element < current_sum):
+        current_sum = element
+    elif (element >= min_sum_so_far) and (element >= current_sum):
+        current_sum += element
+    return dp_min_sum(
+        array=array[1:], min_sum_so_far=min_sum_so_far, current_sum=current_sum
+    )
+
+
 if __name__ == "__main__":
     for array in INPUT_ARRAYS:
-        min_sum_array = min_sum(array)
+        min_sum_array = dp_min_sum(array)
         st = min_sum_array.start_index
         en = min_sum_array.end_index
         print(array, "=>", array[st:en], "soma", min_sum_array.sum)
