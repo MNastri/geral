@@ -92,6 +92,4 @@ def dp_min_sum(array: List[int], min_sum_so_far=None, current_sum=None) -> int:
 if __name__ == "__main__":
     for array in INPUT_ARRAYS:
         min_sum_array = dp_min_sum(array)
-        st = min_sum_array.start_index
-        en = min_sum_array.end_index
-        print(array, "=>", array[st:en], "soma", min_sum_array.sum)
+        print(array, "=>", min_sum_array)
