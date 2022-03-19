@@ -5,9 +5,7 @@ from typing import (
     NamedTuple,
 )
 
-INPUT_ARRAYS = [
-    [-7, 3, 4, -2, -3, 1, -3],
-]
+INPUT_ARRAYS = [[-7, 3, 4, -2, -3, 1, -3], [20, -7, -3, 4, -4, 6, -4, 10]]
 INPUT_ARRAYS.extend([list(pp) for pp in product([-10, -1, 0, 1, 10], repeat=3)])
 
 
@@ -73,17 +71,16 @@ def dp_min_sum(array: List[int], min_sum_so_far=None, current_sum=None) -> int:
     """
     if not array:
         return min_sum_so_far
-    element = array[0]
     if min_sum_so_far is None:
         min_sum_so_far = float("inf")
     if current_sum is None:
         current_sum = float("inf")
-    if element < min_sum_so_far:
-        min_sum_so_far = element
-    elif (element >= min_sum_so_far) and (element < current_sum):
+    element = array[0]
+    current_sum += element
+    if element < current_sum:
         current_sum = element
-    elif (element >= min_sum_so_far) and (element >= current_sum):
-        current_sum += element
+    if current_sum < min_sum_so_far:
+        min_sum_so_far = current_sum
     return dp_min_sum(
         array=array[1:], min_sum_so_far=min_sum_so_far, current_sum=current_sum
     )
