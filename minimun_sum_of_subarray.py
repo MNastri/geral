@@ -16,8 +16,7 @@ class MinSubArray(NamedTuple):
 
 
 def min_sum(array: List) -> MinSubArray:
-    """
-    Calculates the minimum sum of a continuous sub-array of array.
+    """Calculates the minimum sum of a continuous sub-array of array.
     Returns a named tuple with attributes sum, with the actual minimum
     sum; start_index, with the starting index for the sub-array; and end_index,
     with the ending index for the sub-array.
@@ -57,8 +56,7 @@ def min_sum(array: List) -> MinSubArray:
 
 
 def dp_min_sum(array: List[int], min_sum_so_far=None, current_sum=None) -> int:
-    """
-    Calculates the minimum sum of a continuous sub-array of array.
+    """Calculates the minimum sum of a continuous sub-array of array.
     Returns a named tuple with attributes sum, with the actual minimum
     sum; start_index, with the starting index for the sub-array; and end_index,
     with the ending index for the sub-array.
@@ -81,7 +79,6 @@ def dp_min_sum(array: List[int], min_sum_so_far=None, current_sum=None) -> int:
             "Incorrect usage of function, min_sum_so_far and current_sum should "
             "both have values or be set to None."
         )
-
     element = array[0]
     current_sum += element
     if element < current_sum:
