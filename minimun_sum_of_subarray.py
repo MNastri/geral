@@ -74,7 +74,9 @@ def dp_min_sum(array: List[int], min_sum_so_far=None, current_sum=None) -> int:
     if min_sum_so_far is None and current_sum is None:
         min_sum_so_far = float("inf")
         current_sum = float("inf")
-    elif not all([min_sum_so_far, current_sum]):
+    elif min_sum_so_far is not None and current_sum is not None:
+        pass
+    else:
         raise KeyError(
             "Incorrect usage of function, min_sum_so_far and current_sum should "
             "both have values or be set to None."
