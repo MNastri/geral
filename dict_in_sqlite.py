@@ -20,6 +20,8 @@ def learning_abc():
         def all_the_other_stuff(self, msg):
             print(msg)
 
+    print("The abstract methods of Entertainer are:", Entertainer.__abstractmethods__)
+
     class StreetPerformer(Entertainer):
         def sing(self, song):
             return f"Loud version of {song}"
@@ -68,6 +70,27 @@ to add any attributes from the base class into our class. The abstractmethod
 decorator will not affect a registered subclass and will not raise any error.
 But the missing method will fail at runtime.\n\n"""
     print(msg1)
+
+    class HobbyistPerformer:
+        def sing(self, song):
+            return f"Faulty version of {song}"
+
+        def dance(self):
+            return f"Clumsy dance"
+
+    print(
+        "HobbyistPerformer can sing and can dance?",
+        {"sing", "dance"}.issubset(set(dir(HobbyistPerformer))),
+    )
+    print(
+        "HobbyistPerformer is an Entertainer?",
+        issubclass(HobbyistPerformer, Entertainer),
+    )
+    print("Instance of LoungePerformer created. hp =", hp := HobbyistPerformer())
+    print("Is hp an instance of HobbyistPerformer?", isinstance(hp, HobbyistPerformer))
+    print("Is hp an instance of Entertainer?", isinstance(hp, Entertainer))
+    msg2 = """\nABC does not try to recognize if our class is a subclass of a 
+base class. They can only do that through subclassing or registration."""
 
 
 def main():
