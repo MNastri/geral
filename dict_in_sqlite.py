@@ -56,7 +56,7 @@ also to be defined in their subclasses.\n\n"""
     )
     print("Instance of LoungePerformer created. lp =", lp := LoungePerformer())
     print("Is lp an instance of LoungePerformer?", isinstance(lp, LoungePerformer))
-    print("Is lp an instance of Entertainer?", isinstance(lp, LoungePerformer))
+    print("Is lp an instance of Entertainer?", isinstance(lp, Entertainer))
     print(
         "is all_the_other_stuff in LoungePerformer?",
         "all_the_other_stuff" in dir(LoungePerformer),
