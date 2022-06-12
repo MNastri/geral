@@ -93,6 +93,139 @@ But the missing method will fail at runtime.\n\n"""
 base class. They can only do that through subclassing or registration."""
 
 
+def learn_framework_design_pattern():
+    """The parent class provides an engine that calls methods in a subclass. Those
+    required methods are listed as being abstract.
+
+    Usually, the parent manages the execution flow and the subclass provides the
+    details"""
+    import re
+
+    from abc import (
+        ABC,
+        abstractmethod,
+    )
+    from collections import deque
+    from sys import intern
+
+    class Puzzle(ABC):
+        pos = ""
+        goal = ""
+
+        def __init__(self, pos=None):
+            if pos:
+                self.pos = pos
+
+        def __repr__(self):
+            return repr(self.pos)
+
+        def canonical(self):
+            return repr(self)
+
+        def isgoal(self):
+            return self.pos == self.goal
+
+        @abstractmethod
+        def __iter__(self):
+            if 0:
+                yield self
+
+        def solve(puzzle, depth_first=False):
+            queue = deque([puzzle])
+            trail = {intern(puzzle.canonical()): None}
+            solution = deque()
+            append_to_queue = queue.append if depth_first else queue.appendleft
+            while not puzzle.isgoal():
+                for state in puzzle:
+                    canon_representation = state.canonical()
+                    if canon_representation in trail:
+                        continue
+                    trail[intern(canon_representation)] = puzzle
+                    append_to_queue(state)
+                puzzle = queue.pop()
+            while puzzle:
+                solution.appendleft(puzzle)
+                puzzle = trail[puzzle.canonical()]
+            return list(solution)
+
+    class Stepper(Puzzle):
+        pos = (1, 0, 0, 0, 0, 0)
+        goal = (0, 0, 0, 0, 0, 1)
+
+        def __iter__(self):
+            i = self.pos.index(1)
+            if i > 0:
+                yield Stepper((0,) * (i - 1) + (1,) + (0,) * (6 - i))
+            if i < 6:
+                yield Stepper((0,) * (i + 1) + (1,) + (0,) * (4 - i))
+
+    from pprint import pprint
+
+    pprint(Stepper().solve())
+
+    class JugPuzzle(Puzzle):
+        """Given two empty jugs with 3 and 5 liter capacites and a full jug
+        with 8 litters, find a sequence of pours leaving four liters in the two
+        largest jugs."""
+
+        pos = (0, 0, 8)
+        goal = (0, 4, 4)
+        capacity = (3, 5, 8)
+
+        def __iter__(self):
+            for first_jug_num in range(len(self.pos)):
+                for second_jug_num in range(len(self.pos)):
+                    if first_jug_num == second_jug_num:
+                        continue
+                    qty_to_pour = min(
+                        self.pos[first_jug_num],
+                        self.capacity[second_jug_num] - self.pos[second_jug_num],
+                    )
+                    if not qty_to_pour:
+                        continue
+                    duplicate = list(self.pos)
+                    duplicate[first_jug_num] -= qty_to_pour
+                    duplicate[second_jug_num] += qty_to_pour
+                    yield JugPuzzle(tuple(duplicate))
+
+    pprint(JugPuzzle().solve())
+
+    class EightQueens(Puzzle):
+        """Place 8 queens on a chess board such that no two queens attack each
+        other.
+        """
+
+        pos = ()
+
+        def isgoal(self):
+            return len(self.pos) == 8
+
+        def __iter__(self):
+            xx = len(self.pos)
+            for yy in range(8):
+                if yy in self.pos:
+                    continue
+                for x_possibility in range(xx):
+                    y_possibility = self.pos[x_possibility]
+                    if abs(xx - x_possibility) == abs(yy - y_possibility):
+                        break
+                else:
+                    yield EightQueens(self.pos + (yy,))
+
+        def __repr__(self):
+            rows = ["\n"]
+            for (
+                ii,
+                yy,
+            ) in enumerate(self.pos):
+                row = (["_", "."] if ii & 1 else [".", "_"]) * 4 + ["\n"]
+                row[yy] = "Q"
+                rows.append("".join(row))
+            return "".join(rows)
+
+    pprint(EightQueens().solve())
+
+
 def main():
     database = "teste.sqlite3"
     con = sqlite3.connect(database)
@@ -114,4 +247,5 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    learning_abc()
+    # learning_abc()
+    learn_framework_design_pattern()
