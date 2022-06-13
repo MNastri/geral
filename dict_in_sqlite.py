@@ -225,6 +225,88 @@ def learn_framework_design_pattern():
 
     pprint(EightQueens().solve())
 
+    class TriPuzzle(Puzzle):
+        """http://www.pegsgame.com/types-of-pegs-game/cracker-barrel-peg-game.html"""
+
+        pos = "011111111111111"
+        goal = "100000000000000"
+        # triples = positions where we might be able to make a jump
+        triplets = [
+            (0, 1, 3),
+            (1, 3, 6),
+            (3, 6, 10),
+            (2, 4, 7),
+            (4, 7, 11),
+            (5, 8, 12),
+            (0, 2, 5),
+            (2, 5, 9),
+            (5, 9, 14),
+            (1, 4, 8),
+            (4, 8, 13),
+            (3, 7, 12),
+            (10, 11, 12),
+            (11, 12, 13),
+            (12, 13, 14),
+            (6, 7, 8),
+            (7, 8, 9),
+            (3, 4, 5),
+        ]
+
+        def __iter__(self):
+            for tt in self.triplets:
+                if (
+                    self.pos[tt[0]] == "1"
+                    and self.pos[tt[1]] == "1"
+                    and self.pos[tt[2]] == "0"
+                ):
+                    yield TriPuzzle(self.produce(tt, "001"))
+                if (
+                    self.pos[tt[0]] == "0"
+                    and self.pos[tt[1]] == "1"
+                    and self.pos[tt[2]] == "1"
+                ):
+                    yield TriPuzzle(self.produce(tt, "100"))
+
+        def produce(self, triplet, new_value):
+            t0, t1, t2 = triplet
+            v0, v1, v2 = new_value
+            return (
+                self.pos[:t0]
+                + v0
+                + self.pos[t0 + 1 : t1]
+                + v1
+                + self.pos[t1 + 1 : t2]
+                + v2
+                + self.pos[t2 + 1 :]
+            )
+
+        def canonical(self):
+            """reflects self.pos and returns the "biggest" from the two.
+            example
+            "100000000000000" > "010000000000000"
+            "010000000000000" > "001000000000000" NOTE: these are reflections
+            "000100000000000" > "000001000000000" NOTE: these are reflections
+            """
+            pp = self.pos
+            qq = "".join(
+                map(pp.__getitem__, (0, 2, 1, 5, 4, 3, 9, 8, 7, 6, 14, 13, 12, 11, 10))
+            )
+            return max(pp, qq)
+
+        def __repr__(self):
+            rows = ["\n"]
+            for ii in range(5):
+                start = int(ii * (ii + 1) / 2)
+                end = int((ii + 2) * (ii + 1) / 2)
+                pos = [" {}".format(cc) for cc in self.pos[start:end]]
+                qty_charact = (end - start) * 2
+                qty_blanks = int((15 - qty_charact) / 2)
+                row = [" "] * qty_blanks + pos + [" "] * qty_blanks + ["\n"]
+                rows.append("".join(row))
+            return "".join(rows)
+
+    pprint(TriPuzzle().solve())
+
 
 def main():
     database = "teste.sqlite3"
