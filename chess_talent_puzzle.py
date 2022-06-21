@@ -29,25 +29,34 @@ class Puzzle(ABC):
         if 0:
             yield 0
 
-    def solve(puzzle, depth_first=False):
-        queue = deque([puzzle])
+    def solve(puzzle, depth_first=False, how_many=7):
+        solutions = list()
+        # queue = deque([puzzle])
+        queue = deque()
         trail = {intern(puzzle.canonical()): None}
-        solution = deque()
         add_move = queue.append if depth_first else queue.appendleft
-        while not puzzle.isgoal():
-            moves_to_add = [move for move in puzzle]
-            if -1 not in [mv.pos for mv in moves_to_add]:
-                for move in filter(lambda x: x != -1, moves_to_add):
+        for _ in range(how_many):
+            solution = deque()
+            while not puzzle.isgoal():
+                moves_to_add = [move for move in puzzle]
+                positions = [mv.pos for mv in moves_to_add]
+                if -1 in positions:
+                    puzzle = queue.pop()
+                    continue
+                for move in filter(lambda x: x.pos != -1, moves_to_add):
                     canon_representation = move.canonical()
                     if canon_representation in trail:
                         continue
                     trail[intern(canon_representation)] = puzzle
                     add_move(move)
+                puzzle = queue.pop()
+            while puzzle:
+                solution.appendleft(puzzle)
+                puzzle = trail[puzzle.canonical()]
+            solutions.append(len(solutions)//2)
+            solutions.append(solution)
             puzzle = queue.pop()
-        while puzzle:
-            solution.appendleft(puzzle)
-            puzzle = trail[puzzle.canonical()]
-        return solution
+        return solutions
 
 
 class ChessTalent(Puzzle):
