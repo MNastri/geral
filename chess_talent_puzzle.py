@@ -35,7 +35,7 @@ class Puzzle(ABC):
         queue = deque()
         trail = {intern(puzzle.canonical()): None}
         add_move = queue.append if depth_first else queue.appendleft
-        for _ in range(how_many):
+        for ii in range(how_many):
             solution = deque()
             while not puzzle.isgoal():
                 moves_to_add = [move for move in puzzle]
@@ -49,11 +49,16 @@ class Puzzle(ABC):
                         continue
                     trail[intern(canon_representation)] = puzzle
                     add_move(move)
+                print(len(queue))
+                if len(queue) == 0:
+                    break
                 puzzle = queue.pop()
+            if len(queue) == 0:
+                break  # todo handle solved puzzle with empty queue
             while puzzle:
                 solution.appendleft(puzzle)
                 puzzle = trail[puzzle.canonical()]
-            solutions.append(len(solutions)//2)
+            solutions.append(len(solutions) // 2)  # todo
             solutions.append(solution)
             puzzle = queue.pop()
         return solutions
@@ -199,4 +204,4 @@ class ChessTalent(Puzzle):
                 yield ChessTalent(pos)
 
 
-pprint(ChessTalent().solve())
+pprint(ChessTalent().solve(True, 100))
